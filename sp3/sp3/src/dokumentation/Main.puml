@@ -1,0 +1,252 @@
+@startuml
+
+
+
+class Main {
+    + static void main(String[] args)
+}
+
+
+class ChillFlex {
+    - ArrayList<IGenre> genres
+    - ArrayList<IMovie> movies
+    - ArrayList<ISerie> series
+    - ArrayList<IUser> users
+
+    + ChillMedia()
+    - void load()
+    + void run()
+
+    - void listMovies()
+    - void listSeries()
+
+    - ArrayList<IMedia> getPage(int page)
+
+    + ArrayList<IMovie> getMovies()
+    + ArrayList<ISeries> getSeries()
+    + ArrayList<IGenre> getGenres()
+    + ArrayList<IUser> getUsers()
+}
+
+class LogIn {
+    - IUser currentUser
+
+    + LogIn(ChillMedia cm)
+
+    - void signUp()
+    - void signIn()
+    - void createUser()
+    + IUser getCurrentUser()
+}
+
+class Query {
+
+    + static ArrayList<ISeries> searchSeriesGenre(ArrayList<ISeries> series, SeriesGenre genre)
+    + static ArrayList<IMovie> searchMovieGenre(ArrayList<IMovie> movies, MovieGenre genre)
+    + static ArrayList<IMedia> searchTitle(ArrayList<IMedia> media, IGenre genre)
+    + static ArrayList<ISeries> searchSeriesTitle(ArrayList<ISeries> series, String title)
+    + static ArrayList<IMovie> searchMovieTitle(ArrayList<IMovie> movies, String title)
+    + static ArrayList<IMedia> searchTitle(ArrayList<IMedia> medias, String title)
+    + static ArrayList<ISeries> searchSeriesRating(ArrayList<ISeries> series, int minimumRating)
+    + static ArrayList<IMovie> searchMovieRating(ArrayList<IMovie> movies, int minimumRating)
+    + static ArrayList<IMedia> searchRating(ArrayList<IMedia> medias, int minimumRating)
+}
+
+class TextIO {
+    - Scanner scanner
+
+    + TextIO()
+
+    + void print(String message)
+    + String getUserInput(String message)
+    + String getUserInput(String message, String[] optionsList)
+}
+
+class FileIO implements IDataIO {
+    + FileIO()
+
+    + ArrayList<IUser> loadUsers()
+    + ArrayList<IMovie> loadMovies()
+    + ArrayList<ISeries> loadSeries()
+}
+
+class User implements IUser {
+    - static int idCounter
+    - int id
+    - String name
+    - String password
+    - String email
+    - int age
+    - ArrayList<IMovie> myMovies
+    - ArrayList<IMovie> watchedMovies
+
+    + User(String name, String email, String password, int age)
+}
+
+class Movie implements IMovie {
+    - int year
+
+    + Movie(String title, int year, float rating, ArrayList<IGenre> genres)
+
+    + int getYear()
+}
+
+class Series implements ISeries {
+    - int startYear
+    - int endYear
+    - ArrayList<ISeason> seasons
+
+    + Series(String title, int startYear, int endYear, float rating, ArrayList<IGenre> genres, ArrayList<ISeason> seasons)
+
+    + int getStartYear()
+    + int getEndYear()
+    + ArrayList<ISeason> getSeasons()
+}
+
+
+
+
+class LanguageDanish implements ILanguage {
+    + LanguageDanish()
+}
+
+class LanguageEnglish implements ILanguage {
+    + LanguageEnglish()
+}
+
+
+
+abstract class AWatchable implements IMedia {
+    - String title
+    - float rating
+    - ArrayList<IGenre> genres
+
+    + AWatchable(String title, int year, float rating, ArrayList<IGenre> genres)
+
+    + String getTitle()
+    + float getRating()
+    + ArrayList<IGenre> getGenres()
+}
+
+
+abstract class ASeason implements ISeason {
+    - int seasonNumber
+    - int episodeCount
+
+    + ASeason(int seasonNumber, int episodeCount)
+}
+
+
+
+interface IMedia extends Query {
+    + String getTitle()
+    + float getRating()
+    + ArrayList<IGenre> getGenres()
+}
+
+interface ISeries extends AWatchable {
+    + int getStartYear()
+    + int getEndYear()
+    + ArrayList<ISeason> getSeasons()
+}
+
+interface ISeason implements ISeries {
+    + int getSeasonNumber()
+    + int getEpisodeCount()
+}
+
+interface IMovie extends AWatchable {
+    + int getYear()
+}
+
+interface IUser implements ISaveable {
+    + int getId()
+    + String getName()
+    + String getEmail()
+    + String getPassword()
+    + int getAge()
+    + ArrayList<IMovie> getMyMovies()
+    + ArrayList<IMovie> getWatchedMovies()
+    + void addMyMovie(IMovie movie)
+    + void addWatchedMovie(IMovie movie)
+    + void removeMyMovie(IMovie movie)
+    + void save()
+    - void saveWatchedMovies()
+    - void saveMyMovies()
+}
+
+interface IDataIO {
+    + ArrayList<IUser> loadUsers()
+    + ArrayList<IMovie> loadMovies()
+    + ArrayList<ISeries> loadSeries()
+}
+
+interface ILanguage {
+
+}
+
+interface ISaveable {
+    + void save()
+}
+
+interface IGenre { }
+
+
+
+enum MovieGenre implements IGenre {
+    CRIME,
+    DRAMA,
+    BIOGRAPHY,
+    SPORT,
+    HISTORY,
+    ROMANCE,
+    WAR,
+    MYSTERY,
+    ADVENTURE,
+    FAMILY,
+    FANTASY,
+    THRILLER,
+    HORROR,
+    FILM_NOIR,
+    ACTION,
+    SCI_FI,
+    COMEDY,
+    MUSICAL,
+    WESTERN,
+    MUSIC
+}
+
+enum SeriesGenre implements IGenre {
+    TALK_SHOW,
+    DOCUMENTARY,
+    CRIME,
+    DRAMA,
+    ACTION,
+    ADVENTURE,
+    COMEDY,
+    FANTASY,
+    ANIMATION,
+    HORROR,
+    SCI_FI,
+    WAR,
+    THRILLER,
+    MYSTERY,
+    BIOGRAPHY,
+    HISTORY,
+    FAMILY,
+    WESTERN,
+    ROMANCE,
+    SPORT
+}
+
+
+Main *-- ChillMedia
+
+ChillMedia *-- IMedia
+ChillMedia *-- TextIO
+ChillMedia *-- IDataIO
+ChillMedia *-- ILanguage
+ChillMedia *-- IUser
+ChillMedia *-- LogIn
+
+@enduml
